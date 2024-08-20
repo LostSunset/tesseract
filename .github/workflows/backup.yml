@@ -68,7 +68,8 @@ jobs:
                   echo "Please manually resolve conflicts between $branch and $conflict_branch"
                 fi
               fi
-              git push origin $branch
+              # Explicitly push the branch
+              git push origin refs/heads/$branch:refs/heads/$branch
             else
               echo "Branch $branch does not exist in upstream. Skipping."
             fi
