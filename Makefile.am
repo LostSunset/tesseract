@@ -23,7 +23,6 @@ uninstall-hook:
 	rm -rf $(DESTDIR)$(pkgincludedir)
 
 dist-hook:
-# Need to remove .svn directories from directories
 # added using EXTRA_DIST. $(distdir)/tessdata would in
 # theory suffice.
 	rm -rf `find $(distdir) -name .deps -type d`
@@ -549,11 +548,11 @@ libtesseract_lstm_la_SOURCES += src/lstm/reconfig.cpp
 libtesseract_lstm_la_SOURCES += src/lstm/reversed.cpp
 libtesseract_lstm_la_SOURCES += src/lstm/series.cpp
 libtesseract_lstm_la_SOURCES += src/lstm/stridemap.cpp
-libtesseract_lstm_la_SOURCES += src/lstm/tfnetwork.cpp
-libtesseract_lstm_la_SOURCES += src/lstm/weightmatrix.cpp
 if TENSORFLOW
+libtesseract_lstm_la_SOURCES += src/lstm/tfnetwork.cpp
 libtesseract_lstm_la_SOURCES += src/lstm/tfnetwork.pb.cc
 endif
+libtesseract_lstm_la_SOURCES += src/lstm/weightmatrix.cpp
 
 # Rules for src/textord.
 
