@@ -28,10 +28,10 @@ PKG_ARCH=mingw-w64-${ARCH/_/-}
 # Install packages.
 sudo apt-get update --quiet
 sudo apt-get install --assume-yes --no-install-recommends --quiet \
-  asciidoc xsltproc docbook-xml docbook-xsl \
+  asciidoc curl xsltproc docbook-xml docbook-xsl \
   automake dpkg-dev libtool pkg-config default-jdk-headless \
   mingw-w64-tools nsis g++-"$PKG_ARCH" \
-  makepkg pacman-package-manager
+  makepkg pacman-package-manager python3-venv unzip
 
 # Configure pacman.
 
@@ -76,8 +76,6 @@ sudo pacman -S --noconfirm \
  mingw-w64-x86_64-libtiff \
  mingw-w64-x86_64-libwebp
 
-sudo ln -sf "$PWD/.github/workflows/pkg-config-crosswrapper" "/usr/bin/$HOST-pkg-config"
-
 git config --global user.email "sw@weilnetz.de"
 git config --global user.name "Stefan Weil"
 git tag -a "v$TAG" -m "Tesseract $TAG"
@@ -99,12 +97,14 @@ export PKG_CONFIG_PATH
 
 make all training
 MINGW_INSTALL=${PWD}${MINGW}
-make install-jars install training-install html prefix="$MINGW_INSTALL"
+make install-jars install training-install html prefix="$MINGW_INSTALL" INSTALL_STRIP_FLAG=-s
 test -d venv || python3 -m venv venv
 source venv/bin/activate
 pip install pefile
 mkdir -p dll
 ln -sv $("$ROOTDIR/nsis/find_deps.py" "$MINGW_INSTALL"/bin/*.exe "$MINGW_INSTALL"/bin/*.dll) dll/
+ln -svf /usr/lib/gcc/x86_64-w64-mingw32/*-win32/libstdc++-6.dll dll/
+ln -svf /usr/lib/gcc/x86_64-w64-mingw32/*-win32/libgcc_s_seh-1.dll dll/
 make winsetup prefix="$MINGW_INSTALL"
 
 # Copy result for upload.
